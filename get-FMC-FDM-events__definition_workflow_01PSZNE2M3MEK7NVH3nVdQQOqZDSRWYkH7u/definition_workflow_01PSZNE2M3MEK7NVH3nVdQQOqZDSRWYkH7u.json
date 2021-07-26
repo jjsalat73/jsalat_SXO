@@ -1,0 +1,354 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_01PSZNE2M3MEK7NVH3nVdQQOqZDSRWYkH7u",
+    "name": "Get FMC version and health alerts",
+    "title": "Get FMC version and health alerts",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "output",
+          "name": "access token from FDM",
+          "type": "datatype.string",
+          "is_required": false,
+          "is_invisible": false
+        },
+        "unique_name": "variable_workflow_01PTJT7GAG5MZ6ii7pxzAbWnU2X1NqVx9nI",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "is_atomic": false
+      },
+      "delete_workflow_instance": false,
+      "display_name": "Get FMC version and health alerts",
+      "runtime_user": {
+        "target_default": true
+      },
+      "target": {
+        "no_target": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_01PSZRV1LU3QY5RStD2epErzXCXYZL2rXEF",
+        "name": "Secure Firewall - Get Access Token",
+        "title": "Secure Firewall - Get Access Token",
+        "type": "workflow.atomic_workflow",
+        "base_type": "subworkflow",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "Secure Firewall - Get Access Token",
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "override_workflow_target": true,
+            "target_id": "definition_target_01P7EVSWVB43X5ANPQjK9vhpZrvbcjwP9UP",
+            "target_type": "web-service.endpoint"
+          },
+          "workflow_id": "definition_workflow_01GAPSU13QWGT5aCU7ByGC7drrA4iqw5WGZ"
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01PSZNH8C0EGV3cLnysPB6VwNOedWWq15NN",
+        "name": "HTTP Request",
+        "title": "FMC version ",
+        "type": "web-service.http_request",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "allow_auto_redirect": true,
+          "content_type": "application/json",
+          "continue_on_error_status_code": false,
+          "continue_on_failure": false,
+          "custom_headers": [
+            {
+              "name": "X-auth-access-token",
+              "value": "$activity.definition_activity_01PSZRV1LU3QY5RStD2epErzXCXYZL2rXEF.output.variable_workflow_01GAQAJYI05GO10AE0oUFmgN8BF3e4bmliN$"
+            }
+          ],
+          "display_name": "FMC version ",
+          "method": "GET",
+          "relative_url": "fmc_platform/v1/info/serverversion?expanded=true",
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "override_workflow_target": true,
+            "target_id": "definition_target_01P7EVSWVB43X5ANPQjK9vhpZrvbcjwP9UP"
+          }
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01PTFONOC1JTO5F1w85Y125iuDPEAZnGazx",
+        "name": "HTTP Request",
+        "title": "FMC health alerts",
+        "type": "web-service.http_request",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "allow_auto_redirect": true,
+          "content_type": "application/json",
+          "continue_on_error_status_code": false,
+          "continue_on_failure": false,
+          "custom_headers": [
+            {
+              "name": "X-auth-access-token",
+              "value": "$activity.definition_activity_01PSZRV1LU3QY5RStD2epErzXCXYZL2rXEF.output.variable_workflow_01GAQAJYI05GO10AE0oUFmgN8BF3e4bmliN$"
+            }
+          ],
+          "display_name": "FMC health alerts",
+          "method": "GET",
+          "relative_url": "fmc_config/v1/domain/e276abec-e0f2-11e3-8169-6d9ed49b625f/health/alerts",
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "override_workflow_target": true,
+            "target_id": "definition_target_01P7EVSWVB43X5ANPQjK9vhpZrvbcjwP9UP"
+          }
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01PTJ878CTEU91t2hs9Tn5IDWa3C7sJy5ZS",
+        "name": "HTTP Request",
+        "title": "grab token from FDM",
+        "type": "web-service.http_request",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "allow_auto_redirect": true,
+          "content_type": "application/json",
+          "continue_on_error_status_code": true,
+          "continue_on_failure": false,
+          "display_name": "grab token from FDM",
+          "method": "POST",
+          "relative_url": "/api/fdm/v3/fdm/token",
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "override_workflow_target": true,
+            "target_id": "definition_target_01PTIZRGUFT502lrpwSic9oYUz29D2K6b4O"
+          }
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01PTJSCOJY5321cNd7DiG1djLUq3E0ZkyEU",
+        "name": "Set Variables",
+        "title": "update worflow with new token",
+        "type": "core.set_multiple_variables",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "update worflow with new token",
+          "skip_execution": false,
+          "variables_to_update": [
+            {
+              "variable_to_update": "$workflow.definition_workflow_01PSZNE2M3MEK7NVH3nVdQQOqZDSRWYkH7u.output.variable_workflow_01PTJT7GAG5MZ6ii7pxzAbWnU2X1NqVx9nI$",
+              "variable_value_new": "$activity.definition_activity_01PTJ878CTEU91t2hs9Tn5IDWa3C7sJy5ZS.output.response_body$"
+            }
+          ]
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01PTITXL224LL2Ifwd2kQoGq9XA9BOocT6c",
+        "name": "HTTP Request",
+        "title": "HTTP Request",
+        "type": "web-service.http_request",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "allow_auto_redirect": true,
+          "content_type": "application/json",
+          "continue_on_error_status_code": false,
+          "continue_on_failure": false,
+          "custom_headers": [
+            {
+              "name": "X-auth-access-token",
+              "value": "$activity.definition_activity_01PTJ878CTEU91t2hs9Tn5IDWa3C7sJy5ZS.output.response_body$"
+            }
+          ],
+          "display_name": "HTTP Request",
+          "method": "GET",
+          "relative_url": "/api/fdm/v3/operational/interfaceinfo/default",
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "override_workflow_target": true,
+            "target_id": "definition_target_01PY0I3TA29OH43z41c8kVMQ9UwmkLS7e8P"
+          }
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01Q6BOKQ5V6M354WCDl269A3MCj7aPq7V2x",
+        "name": "Send Email",
+        "title": "Send Email",
+        "type": "email.smtp_send_email",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_if_one_address_valid": false,
+          "continue_on_failure": false,
+          "display_name": "Send Email",
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "use_workflow_target": true
+          }
+        },
+        "object_type": "definition_activity"
+      }
+    ],
+    "categories": [
+      "category_01PTGLQ6JY7AJ2FGkiFmkZ3OrA82tRAfIf0"
+    ]
+  },
+  "categories": {
+    "category_01PTGLQ6JY7AJ2FGkiFmkZ3OrA82tRAfIf0": {
+      "unique_name": "category_01PTGLQ6JY7AJ2FGkiFmkZ3OrA82tRAfIf0",
+      "name": "Firepower NGFW",
+      "title": "Firepower NGFW",
+      "type": "basic.category",
+      "base_type": "category",
+      "category_type": "custom",
+      "object_type": "category"
+    }
+  },
+  "targets": {
+    "definition_target_01P7EVSWVB43X5ANPQjK9vhpZrvbcjwP9UP": {
+      "unique_name": "definition_target_01P7EVSWVB43X5ANPQjK9vhpZrvbcjwP9UP",
+      "name": "FMC",
+      "title": "FMC",
+      "type": "web-service.endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "ao_remote_id": "01P76OBIT2T6Z3PKl2cwPv55Z4gqZcid132",
+        "default_runtime_user_id": "definition_runtime_user_01P7EUZX0GCT94YBdbQUxNwTQ5yeDJEodFa",
+        "description": "talaslabs",
+        "disable_certificate_validation": true,
+        "display_name": "FMC",
+        "host": "192.168.64.3",
+        "ignore_proxy": false,
+        "no_runtime_user": false,
+        "path": "api/",
+        "protocol": "https"
+      }
+    },
+    "definition_target_01PTIZRGUFT502lrpwSic9oYUz29D2K6b4O": {
+      "unique_name": "definition_target_01PTIZRGUFT502lrpwSic9oYUz29D2K6b4O",
+      "name": "FDM_1010",
+      "title": "FDM_1010",
+      "type": "web-service.endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "ao_remote_id": "01P76OBIT2T6Z3PKl2cwPv55Z4gqZcid132",
+        "default_runtime_user_id": "definition_runtime_user_01PTJGD4B2X9H2YIEWoWgEKYdeCJ5utEPH4",
+        "description": "192.168.80.11",
+        "disable_certificate_validation": true,
+        "display_name": "FDM_1010",
+        "host": "192.168.80.11",
+        "ignore_proxy": false,
+        "no_runtime_user": false,
+        "protocol": "https"
+      }
+    },
+    "definition_target_01PY0I3TA29OH43z41c8kVMQ9UwmkLS7e8P": {
+      "unique_name": "definition_target_01PY0I3TA29OH43z41c8kVMQ9UwmkLS7e8P",
+      "name": "FPR1010_NO_creds",
+      "title": "FPR1010_NO_creds",
+      "type": "web-service.endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "disable_certificate_validation": false,
+        "display_name": "FPR1010_NO_creds",
+        "host": "192.168.80.11",
+        "ignore_proxy": false,
+        "no_runtime_user": true,
+        "protocol": "https"
+      }
+    }
+  },
+  "runtime_users": {
+    "definition_runtime_user_01P7EUZX0GCT94YBdbQUxNwTQ5yeDJEodFa": {
+      "unique_name": "definition_runtime_user_01P7EUZX0GCT94YBdbQUxNwTQ5yeDJEodFa",
+      "name": "FMC API Credentials",
+      "title": "FMC API Credentials",
+      "type": "runtime_user.web-service_basic_credentials",
+      "base_type": "runtime_user",
+      "object_type": "definition_runtime_user",
+      "properties": {
+        "auth_option": "*****",
+        "basic_password": "*****",
+        "basic_username": "*****",
+        "display_name": "FMC API Credentials"
+      }
+    },
+    "definition_runtime_user_01PTJGD4B2X9H2YIEWoWgEKYdeCJ5utEPH4": {
+      "unique_name": "definition_runtime_user_01PTJGD4B2X9H2YIEWoWgEKYdeCJ5utEPH4",
+      "name": "FDM_1010",
+      "title": "FDM_1010",
+      "type": "runtime_user.web-service_basic_credentials",
+      "base_type": "runtime_user",
+      "object_type": "definition_runtime_user",
+      "properties": {
+        "auth_option": "*****",
+        "basic_password": "*****",
+        "basic_username": "*****",
+        "display_name": "FDM_1010"
+      }
+    }
+  },
+  "atomic_workflows": [
+    "definition_workflow_01GAPSU13QWGT5aCU7ByGC7drrA4iqw5WGZ"
+  ],
+  "remotemetas": {
+    "remote_meta_01P76OBIZ263U734PR8BoPBHm9jI8fmAiKL": {
+      "base_type": "remote_meta",
+      "type": "generic.remote_meta",
+      "name": "sxo-remote-01",
+      "title": "sxo-remote-01",
+      "description": "remote SXO appliance",
+      "version": "1.0.0",
+      "properties": {
+        "cloud_type": "vmware",
+        "description": "remote SXO appliance",
+        "display_name": "sxo-remote-01",
+        "network": {
+          "dns_servers": "192.168.64.188,208.67.222.222",
+          "gateway": "192.168.64.254",
+          "ip_endpoint": "192.168.64.227/24",
+          "is_static_ip": true
+        },
+        "proxy": {
+          "require_proxy": false
+        }
+      },
+      "unique_name": "remote_meta_01P76OBIZ263U734PR8BoPBHm9jI8fmAiKL",
+      "object_type": "remote_meta"
+    }
+  }
+}
