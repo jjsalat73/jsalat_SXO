@@ -1,0 +1,55 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_01Q42E85NFJS444apnB1hnEw669wrUsgKrq",
+    "name": "SXO Python modules",
+    "title": "SXO Python modules",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": null,
+    "properties": {
+      "atomic": {
+        "is_atomic": false
+      },
+      "delete_workflow_instance": false,
+      "display_name": "SXO Python modules",
+      "runtime_user": {
+        "target_default": true
+      },
+      "target": {
+        "no_target": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_01Q42EAKKL2TR2tLqtXJ88H37VLun2KKy3J",
+        "name": "Execute Python Script",
+        "title": "Execute Python Script",
+        "type": "python3.script",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": false,
+          "display_name": "Execute Python Script",
+          "script": "# Output a list of available modules\nhelp(\"modules\")",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      }
+    ],
+    "categories": [
+      "category_01Q42FJL9QG2O15H34iQHnItZ4h7poSOor8"
+    ]
+  },
+  "categories": {
+    "category_01Q42FJL9QG2O15H34iQHnItZ4h7poSOor8": {
+      "unique_name": "category_01Q42FJL9QG2O15H34iQHnItZ4h7poSOor8",
+      "name": "python",
+      "title": "python",
+      "type": "basic.category",
+      "base_type": "category",
+      "category_type": "custom",
+      "object_type": "category"
+    }
+  }
+}
