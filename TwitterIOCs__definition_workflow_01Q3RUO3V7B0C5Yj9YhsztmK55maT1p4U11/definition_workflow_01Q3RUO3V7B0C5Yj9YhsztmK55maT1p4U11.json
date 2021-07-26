@@ -1,0 +1,263 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_01Q3RUO3V7B0C5Yj9YhsztmK55maT1p4U11",
+    "name": "IOC feed from Twitter ",
+    "title": "IOC feed from Twitter ",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "api.twitter.com",
+          "scope": "local",
+          "name": "Twitter API call",
+          "type": "datatype.string",
+          "is_required": false,
+          "is_invisible": false
+        },
+        "unique_name": "variable_workflow_01Q3T4ACL7YGT4nJVmd5Bn3XWFj75htWXXY",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "AAAAAAAAAAAAAAAAAAAAAEjgRwEAAAAAuddr93iN4Lissv2dnZ%2FRcyXNQsg%3DB5fbrDi7GVZHNgOwU95QZ02YnHtcmcvyNbMHNamcmcwt22QgSI",
+          "scope": "local",
+          "name": "Twitter Bearer token",
+          "type": "datatype.string",
+          "is_required": false,
+          "is_invisible": false
+        },
+        "unique_name": "variable_workflow_01Q3S26ZN6N9L2f87H9oh5i8Ghekt8eDQYp",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "is_atomic": false
+      },
+      "delete_workflow_instance": false,
+      "display_name": "IOC feed from Twitter ",
+      "runtime_user": {
+        "target_default": true
+      },
+      "target": {
+        "no_target": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_01Q3RUQCNMB2K3Azk8mn9QXUU9msFXWSYXk",
+        "name": "Execute Python Script",
+        "title": "Execute Python Script",
+        "type": "python3.script",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": false,
+          "display_name": "Execute Python Script",
+          "script": "import requests\nimport json#its bad practice to place your bearer token directly into the script (this is just done for illustration purposes)\nBEARER_TOKEN = sys.argv[1]\nquery. XXX\ntweet_fields XXX\ndef search_twitter(query, tweet_fields, bearer_token = BEARER_TOKEN):    headers = {\"Authorization\": \"Bearer {}\".format(bearer_token)}\n    url = \"https://api.twitter.com/2/tweets/search/recent?query={}\u0026{}\".format(\n        query, tweet_fields\n    )    response = requests.request(\"GET\", url, headers=headers)\n    print(response.status_code)\n    if response.status_code != 200:\n        raise Exception(response.status_code, response.text)\n    return response.json()",
+          "script_arguments": [
+            "$workflow.definition_workflow_01Q3RUO3V7B0C5Yj9YhsztmK55maT1p4U11.local.variable_workflow_01Q3S26ZN6N9L2f87H9oh5i8Ghekt8eDQYp$"
+          ],
+          "skip_execution": true
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01Q3S3Q9SH4PQ4PxHoTVjBghIrWDmQvlaUo",
+        "name": "HTTP Request",
+        "title": "HTTP Request",
+        "type": "web-service.http_request",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "allow_auto_redirect": true,
+          "content_type": "application/json",
+          "continue_on_error_status_code": true,
+          "continue_on_failure": false,
+          "custom_headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer AAAAAAAAAAAAAAAAAAAAAEjgRwEAAAAAuddr93iN4Lissv2dnZ%2FRcyXNQsg%3DB5fbrDi7GVZHNgOwU95QZ02YnHtcmcvyNbMHNamcmcwt22QgSI"
+            }
+          ],
+          "display_name": "HTTP Request",
+          "method": "GET",
+          "relative_url": "/2/tweets/search/recent?query=skateboarding dog\u0026tweet.fields=text,author_id",
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": true,
+          "target": {
+            "override_workflow_target": true,
+            "target_id": "definition_target_01Q3SHYWNW0AK29CejtLcJQEXkOoGredWMR"
+          }
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01Q3SWRZ6R8HZ1cPAr5eQNQBXGAU5sxTWTE",
+        "name": "HTTP Request",
+        "title": "HTTP Request",
+        "type": "web-service.http_request",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "allow_auto_redirect": true,
+          "content_type": "application/json",
+          "continue_on_error_status_code": true,
+          "continue_on_failure": false,
+          "custom_headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer AAAAAAAAAAAAAAAAAAAAAEjgRwEAAAAAuddr93iN4Lissv2dnZ%2FRcyXNQsg%3DB5fbrDi7GVZHNgOwU95QZ02YnHtcmcvyNbMHNamcmcwt22QgSI"
+            }
+          ],
+          "display_name": "HTTP Request",
+          "method": "GET",
+          "relative_url": "/2/tweets/search/recent?query=security\u0026tweet.fields=text,author_id",
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": true,
+          "target": {
+            "override_workflow_target": true,
+            "target_id": "definition_target_01Q3SHYWNW0AK29CejtLcJQEXkOoGredWMR"
+          }
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01Q3WVJL8E3QZ55ytDtw7jOfBg6JruTFdzD",
+        "name": "HTTP Request",
+        "title": "HTTP Request",
+        "type": "web-service.http_request",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "allow_auto_redirect": true,
+          "content_type": "application/json",
+          "continue_on_error_status_code": true,
+          "continue_on_failure": false,
+          "custom_headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer AAAAAAAAAAAAAAAAAAAAAEjgRwEAAAAAuddr93iN4Lissv2dnZ%2FRcyXNQsg%3DB5fbrDi7GVZHNgOwU95QZ02YnHtcmcvyNbMHNamcmcwt22QgSI"
+            }
+          ],
+          "description": "#threatintel\n#opendir\n#malware\n#iocs",
+          "display_name": "HTTP Request",
+          "method": "GET",
+          "relative_url": "/2/tweets/search/recent?query=%23opendir",
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "override_workflow_target": true,
+            "target_id": "definition_target_01Q3SHYWNW0AK29CejtLcJQEXkOoGredWMR"
+          }
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01Q3T9N2UGWHP0NfBh2BRH5fpgQLTGlsSQD",
+        "name": "Webex Teams - Post Message to Room",
+        "title": "Webex Teams - Post Message to Room",
+        "type": "workflow.atomic_workflow",
+        "base_type": "subworkflow",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "Webex Teams - Post Message to Room",
+          "input": {
+            "variable_workflow_01FGYY44G3MZ55amJu9YqgUeKS8GT49bZx3": "$global.variable_01P6N0UGXO7JB7HlXdqOu9FwRkW548JK0CV.global.variable_01P6N0UGXO7JB7HlXdqOu9FwRkW548JK0CV$",
+            "variable_workflow_01FGYY44G3TK951Crpnd8g2izonyM4bFtpW": "Y2lzY29zcGFyazovL3VzL1JPT00vNzRiOTYxZDAtY2RkMC0xMWViLTkxODUtNjliZDMxNjcyYWMw",
+            "variable_workflow_01FGYY44G3UPV3heGGc3vXCV47YL5WoI2X6": "",
+            "variable_workflow_01FGYZ9BV4QTP19CuMwcW8QywvCP9ymx2BZ": "$activity.definition_activity_01Q3WVJL8E3QZ55ytDtw7jOfBg6JruTFdzD.output.response_body$"
+          },
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "override_workflow_target": true,
+            "target_id": "definition_target_01GRC3KACN0EQ3FKm380fx9ufbyfPdrEJR5",
+            "target_type": "web-service.endpoint"
+          },
+          "workflow_id": "definition_workflow_01FGYY44YU521254ygN3Le0In0kEHpiPNpf"
+        },
+        "object_type": "definition_activity"
+      }
+    ],
+    "categories": [
+      "category_01PEGQAT57B3D5YPpCRdY2YyekzBWPHjX8W"
+    ]
+  },
+  "categories": {
+    "category_01PEGQAT57B3D5YPpCRdY2YyekzBWPHjX8W": {
+      "unique_name": "category_01PEGQAT57B3D5YPpCRdY2YyekzBWPHjX8W",
+      "name": "Threat Hunting",
+      "title": "Threat Hunting",
+      "type": "basic.category",
+      "base_type": "category",
+      "category_type": "custom",
+      "object_type": "category"
+    }
+  },
+  "targets": {
+    "definition_target_01GRC3KACN0EQ3FKm380fx9ufbyfPdrEJR5": {
+      "unique_name": "definition_target_01GRC3KACN0EQ3FKm380fx9ufbyfPdrEJR5",
+      "name": "Webex Teams",
+      "title": "Webex Teams",
+      "type": "web-service.endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "description": "Webex Teams",
+        "disable_certificate_validation": false,
+        "display_name": "Webex Teams",
+        "host": "webexapis.com",
+        "no_runtime_user": true,
+        "port": 443,
+        "protocol": "https"
+      }
+    },
+    "definition_target_01Q3SHYWNW0AK29CejtLcJQEXkOoGredWMR": {
+      "unique_name": "definition_target_01Q3SHYWNW0AK29CejtLcJQEXkOoGredWMR",
+      "name": "Twitter Search",
+      "title": "Twitter Search",
+      "type": "web-service.endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "disable_certificate_validation": false,
+        "display_name": "Twitter Search",
+        "host": "api.twitter.com",
+        "ignore_proxy": true,
+        "no_runtime_user": true,
+        "port": 443,
+        "protocol": "https"
+      }
+    }
+  },
+  "variables": {
+    "variable_01P6N0UGXO7JB7HlXdqOu9FwRkW548JK0CV": {
+      "unique_name": "variable_01P6N0UGXO7JB7HlXdqOu9FwRkW548JK0CV",
+      "properties": {
+        "value": "*****",
+        "scope": "global",
+        "name": "Webex Teams Bot API",
+        "type": "datatype.secure_string",
+        "is_required": false,
+        "is_invisible": false
+      },
+      "object_type": "variable"
+    }
+  },
+  "atomic_workflows": [
+    "definition_workflow_01FGYY44YU521254ygN3Le0In0kEHpiPNpf"
+  ]
+}
