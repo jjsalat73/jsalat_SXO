@@ -1,8 +1,8 @@
 {
   "workflow": {
     "unique_name": "definition_workflow_01PSZNE2M3MEK7NVH3nVdQQOqZDSRWYkH7u",
-    "name": "Get FMC version and health alerts",
-    "title": "Get FMC version and health alerts",
+    "name": "FMC and FDM Health Check",
+    "title": "FMC and FDM Health Check",
     "type": "generic.workflow",
     "base_type": "workflow",
     "variables": [
@@ -25,7 +25,8 @@
         "is_atomic": false
       },
       "delete_workflow_instance": false,
-      "display_name": "Get FMC version and health alerts",
+      "description": "pulls version and health alert status from both FMC and FDM",
+      "display_name": "FMC and FDM Health Check",
       "runtime_user": {
         "target_default": true
       },
@@ -36,186 +37,301 @@
     "object_type": "definition_workflow",
     "actions": [
       {
-        "unique_name": "definition_activity_01PSZRV1LU3QY5RStD2epErzXCXYZL2rXEF",
-        "name": "Secure Firewall - Get Access Token",
-        "title": "Secure Firewall - Get Access Token",
-        "type": "workflow.atomic_workflow",
-        "base_type": "subworkflow",
-        "properties": {
-          "continue_on_failure": false,
-          "display_name": "Secure Firewall - Get Access Token",
-          "runtime_user": {
-            "target_default": true
-          },
-          "skip_execution": false,
-          "target": {
-            "override_workflow_target": true,
-            "target_id": "definition_target_01P7EVSWVB43X5ANPQjK9vhpZrvbcjwP9UP",
-            "target_type": "web-service.endpoint"
-          },
-          "workflow_id": "definition_workflow_01GAPSU13QWGT5aCU7ByGC7drrA4iqw5WGZ"
-        },
-        "object_type": "definition_activity"
-      },
-      {
-        "unique_name": "definition_activity_01PSZNH8C0EGV3cLnysPB6VwNOedWWq15NN",
-        "name": "HTTP Request",
-        "title": "FMC version ",
-        "type": "web-service.http_request",
+        "unique_name": "definition_activity_01Q7H3Z4N0DY25dG6eShgM3kcAhwoLKzMce",
+        "name": "Group",
+        "title": "FMC",
+        "type": "logic.group",
         "base_type": "activity",
         "properties": {
-          "action_timeout": 180,
-          "allow_auto_redirect": true,
-          "content_type": "application/json",
-          "continue_on_error_status_code": false,
           "continue_on_failure": false,
-          "custom_headers": [
-            {
-              "name": "X-auth-access-token",
-              "value": "$activity.definition_activity_01PSZRV1LU3QY5RStD2epErzXCXYZL2rXEF.output.variable_workflow_01GAQAJYI05GO10AE0oUFmgN8BF3e4bmliN$"
-            }
-          ],
-          "display_name": "FMC version ",
-          "method": "GET",
-          "relative_url": "fmc_platform/v1/info/serverversion?expanded=true",
-          "runtime_user": {
-            "target_default": true
+          "display_name": "FMC",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_01PSZRV1LU3QY5RStD2epErzXCXYZL2rXEF",
+            "name": "Secure Firewall - Get Access Token",
+            "title": "Secure Firewall - Get Access Token",
+            "type": "workflow.atomic_workflow",
+            "base_type": "subworkflow",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "Secure Firewall - Get Access Token",
+              "runtime_user": {
+                "target_default": true
+              },
+              "skip_execution": false,
+              "target": {
+                "override_workflow_target": true,
+                "target_id": "definition_target_01P7EVSWVB43X5ANPQjK9vhpZrvbcjwP9UP",
+                "target_type": "web-service.endpoint"
+              },
+              "workflow_id": "definition_workflow_01GAPSU13QWGT5aCU7ByGC7drrA4iqw5WGZ"
+            },
+            "object_type": "definition_activity"
           },
-          "skip_execution": false,
-          "target": {
-            "override_workflow_target": true,
-            "target_id": "definition_target_01P7EVSWVB43X5ANPQjK9vhpZrvbcjwP9UP"
+          {
+            "unique_name": "definition_activity_01PSZNH8C0EGV3cLnysPB6VwNOedWWq15NN",
+            "name": "HTTP Request",
+            "title": "FMC - Get Version ",
+            "type": "web-service.http_request",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "allow_auto_redirect": true,
+              "content_type": "application/json",
+              "continue_on_error_status_code": false,
+              "continue_on_failure": false,
+              "custom_headers": [
+                {
+                  "name": "X-auth-access-token",
+                  "value": "$activity.definition_activity_01PSZRV1LU3QY5RStD2epErzXCXYZL2rXEF.output.variable_workflow_01GAQAJYI05GO10AE0oUFmgN8BF3e4bmliN$"
+                }
+              ],
+              "display_name": "FMC - Get Version ",
+              "method": "GET",
+              "relative_url": "fmc_platform/v1/info/serverversion?expanded=true",
+              "runtime_user": {
+                "target_default": true
+              },
+              "skip_execution": false,
+              "target": {
+                "override_workflow_target": true,
+                "target_id": "definition_target_01P7EVSWVB43X5ANPQjK9vhpZrvbcjwP9UP"
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01PTFONOC1JTO5F1w85Y125iuDPEAZnGazx",
+            "name": "HTTP Request",
+            "title": "FMC- Health Check",
+            "type": "web-service.http_request",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "allow_auto_redirect": true,
+              "content_type": "application/json",
+              "continue_on_error_status_code": false,
+              "continue_on_failure": false,
+              "custom_headers": [
+                {
+                  "name": "X-auth-access-token",
+                  "value": "$activity.definition_activity_01PSZRV1LU3QY5RStD2epErzXCXYZL2rXEF.output.variable_workflow_01GAQAJYI05GO10AE0oUFmgN8BF3e4bmliN$"
+                }
+              ],
+              "display_name": "FMC- Health Check",
+              "method": "GET",
+              "relative_url": "fmc_config/v1/domain/e276abec-e0f2-11e3-8169-6d9ed49b625f/health/alerts",
+              "runtime_user": {
+                "target_default": true
+              },
+              "skip_execution": false,
+              "target": {
+                "override_workflow_target": true,
+                "target_id": "definition_target_01P7EVSWVB43X5ANPQjK9vhpZrvbcjwP9UP"
+              }
+            },
+            "object_type": "definition_activity"
           }
-        },
-        "object_type": "definition_activity"
+        ]
       },
       {
-        "unique_name": "definition_activity_01PTFONOC1JTO5F1w85Y125iuDPEAZnGazx",
-        "name": "HTTP Request",
-        "title": "FMC health alerts",
-        "type": "web-service.http_request",
+        "unique_name": "definition_activity_01Q7H43J67IAZ2T3UF172sdCRawzCJFuKZM",
+        "name": "Group",
+        "title": "FDM",
+        "type": "logic.group",
         "base_type": "activity",
         "properties": {
-          "action_timeout": 180,
-          "allow_auto_redirect": true,
-          "content_type": "application/json",
-          "continue_on_error_status_code": false,
           "continue_on_failure": false,
-          "custom_headers": [
-            {
-              "name": "X-auth-access-token",
-              "value": "$activity.definition_activity_01PSZRV1LU3QY5RStD2epErzXCXYZL2rXEF.output.variable_workflow_01GAQAJYI05GO10AE0oUFmgN8BF3e4bmliN$"
-            }
-          ],
-          "display_name": "FMC health alerts",
-          "method": "GET",
-          "relative_url": "fmc_config/v1/domain/e276abec-e0f2-11e3-8169-6d9ed49b625f/health/alerts",
-          "runtime_user": {
-            "target_default": true
+          "display_name": "FDM",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_01PTJ878CTEU91t2hs9Tn5IDWa3C7sJy5ZS",
+            "name": "HTTP Request",
+            "title": "FDM1010 - Get Access Token",
+            "type": "web-service.http_request",
+            "base_type": "activity",
+            "properties": {
+              "accept": "application/json",
+              "action_timeout": 180,
+              "allow_auto_redirect": true,
+              "body": "{\n   \"grant_type\": \"password\",\n   \"username\": \"admin\",\n   \"password\": \"Cisco123\"\n }",
+              "content_type": "application/json",
+              "continue_on_error_status_code": true,
+              "continue_on_failure": false,
+              "display_name": "FDM1010 - Get Access Token",
+              "method": "POST",
+              "relative_url": "fdm/token",
+              "runtime_user": {
+                "target_default": true
+              },
+              "skip_execution": false,
+              "target": {
+                "override_workflow_target": true,
+                "target_id": "definition_target_01PTIZRGUFT502lrpwSic9oYUz29D2K6b4O"
+              }
+            },
+            "object_type": "definition_activity"
           },
-          "skip_execution": false,
-          "target": {
-            "override_workflow_target": true,
-            "target_id": "definition_target_01P7EVSWVB43X5ANPQjK9vhpZrvbcjwP9UP"
-          }
-        },
-        "object_type": "definition_activity"
-      },
-      {
-        "unique_name": "definition_activity_01PTJ878CTEU91t2hs9Tn5IDWa3C7sJy5ZS",
-        "name": "HTTP Request",
-        "title": "grab token from FDM",
-        "type": "web-service.http_request",
-        "base_type": "activity",
-        "properties": {
-          "action_timeout": 180,
-          "allow_auto_redirect": true,
-          "content_type": "application/json",
-          "continue_on_error_status_code": true,
-          "continue_on_failure": false,
-          "display_name": "grab token from FDM",
-          "method": "POST",
-          "relative_url": "/api/fdm/v3/fdm/token",
-          "runtime_user": {
-            "target_default": true
+          {
+            "unique_name": "definition_activity_01Q9RPKEQQ61O0OwQS2tDuVZdg2OkK2rUSt",
+            "name": "JSONPath Query",
+            "title": "find token in response",
+            "type": "corejava.jsonpathquery",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "continue_on_failure": false,
+              "display_name": "find token in response",
+              "input_json": "$activity.definition_activity_01PTJ878CTEU91t2hs9Tn5IDWa3C7sJy5ZS.output.response_body$",
+              "jsonpath_queries": [
+                {
+                  "jsonpath_query": "$.access_token",
+                  "jsonpath_query_name": "token",
+                  "jsonpath_query_type": "string"
+                },
+                {
+                  "jsonpath_query": "$.expires_in",
+                  "jsonpath_query_name": "expiresIn",
+                  "jsonpath_query_type": "string"
+                }
+              ],
+              "skip_execution": false
+            },
+            "object_type": "definition_activity"
           },
-          "skip_execution": false,
-          "target": {
-            "override_workflow_target": true,
-            "target_id": "definition_target_01PTIZRGUFT502lrpwSic9oYUz29D2K6b4O"
-          }
-        },
-        "object_type": "definition_activity"
-      },
-      {
-        "unique_name": "definition_activity_01PTJSCOJY5321cNd7DiG1djLUq3E0ZkyEU",
-        "name": "Set Variables",
-        "title": "update worflow with new token",
-        "type": "core.set_multiple_variables",
-        "base_type": "activity",
-        "properties": {
-          "continue_on_failure": false,
-          "display_name": "update worflow with new token",
-          "skip_execution": false,
-          "variables_to_update": [
-            {
-              "variable_to_update": "$workflow.definition_workflow_01PSZNE2M3MEK7NVH3nVdQQOqZDSRWYkH7u.output.variable_workflow_01PTJT7GAG5MZ6ii7pxzAbWnU2X1NqVx9nI$",
-              "variable_value_new": "$activity.definition_activity_01PTJ878CTEU91t2hs9Tn5IDWa3C7sJy5ZS.output.response_body$"
-            }
-          ]
-        },
-        "object_type": "definition_activity"
-      },
-      {
-        "unique_name": "definition_activity_01PTITXL224LL2Ifwd2kQoGq9XA9BOocT6c",
-        "name": "HTTP Request",
-        "title": "HTTP Request",
-        "type": "web-service.http_request",
-        "base_type": "activity",
-        "properties": {
-          "action_timeout": 180,
-          "allow_auto_redirect": true,
-          "content_type": "application/json",
-          "continue_on_error_status_code": false,
-          "continue_on_failure": false,
-          "custom_headers": [
-            {
-              "name": "X-auth-access-token",
-              "value": "$activity.definition_activity_01PTJ878CTEU91t2hs9Tn5IDWa3C7sJy5ZS.output.response_body$"
-            }
-          ],
-          "display_name": "HTTP Request",
-          "method": "GET",
-          "relative_url": "/api/fdm/v3/operational/interfaceinfo/default",
-          "runtime_user": {
-            "target_default": true
+          {
+            "unique_name": "definition_activity_01Q9RPMHH5XAF4Jzg8EVyzYnyYG8dhvl64C",
+            "name": "Set Variables",
+            "title": "set access token to workflow variable",
+            "type": "core.set_multiple_variables",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "set access token to workflow variable",
+              "skip_execution": false,
+              "variables_to_update": [
+                {
+                  "variable_to_update": "$workflow.definition_workflow_01PSZNE2M3MEK7NVH3nVdQQOqZDSRWYkH7u.output.variable_workflow_01PTJT7GAG5MZ6ii7pxzAbWnU2X1NqVx9nI$",
+                  "variable_value_new": "$activity.definition_activity_01Q9RPKEQQ61O0OwQS2tDuVZdg2OkK2rUSt.output.jsonpath_queries.token$"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
           },
-          "skip_execution": false,
-          "target": {
-            "override_workflow_target": true,
-            "target_id": "definition_target_01PY0I3TA29OH43z41c8kVMQ9UwmkLS7e8P"
+          {
+            "unique_name": "definition_activity_01PTJSCOJY5321cNd7DiG1djLUq3E0ZkyEU",
+            "name": "Set Variables",
+            "title": "Update workflow with new token",
+            "type": "core.set_multiple_variables",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "display_name": "Update workflow with new token",
+              "skip_execution": true,
+              "variables_to_update": [
+                {
+                  "variable_to_update": "$workflow.definition_workflow_01PSZNE2M3MEK7NVH3nVdQQOqZDSRWYkH7u.output.variable_workflow_01PTJT7GAG5MZ6ii7pxzAbWnU2X1NqVx9nI$",
+                  "variable_value_new": "$activity.definition_activity_01PTJ878CTEU91t2hs9Tn5IDWa3C7sJy5ZS.output.response_body$"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01Q9PUO6UW1G46PUZYLCiNMm9Pn651nmWqH",
+            "name": "HTTP Request",
+            "title": "Get FDM1010 AC hit counts",
+            "type": "web-service.http_request",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "allow_auto_redirect": true,
+              "content_type": "application/json",
+              "continue_on_error_status_code": false,
+              "continue_on_failure": false,
+              "custom_headers": [
+                {
+                  "name": "Authorization",
+                  "value": "Bearer $workflow.definition_workflow_01PSZNE2M3MEK7NVH3nVdQQOqZDSRWYkH7u.output.variable_workflow_01PTJT7GAG5MZ6ii7pxzAbWnU2X1NqVx9nI$"
+                }
+              ],
+              "display_name": "Get FDM1010 AC hit counts",
+              "method": "GET",
+              "relative_url": "/fdm/v6/policy/accesspolicies/default/operational/hitcounts",
+              "runtime_user": {
+                "target_default": true
+              },
+              "skip_execution": false,
+              "target": {
+                "override_workflow_target": true,
+                "target_id": "definition_target_01PY0I3TA29OH43z41c8kVMQ9UwmkLS7e8P"
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01QBKUMCCXWGF4fbkotqxig6sEyK64aR3am",
+            "name": "HTTP Request",
+            "title": "Get FDM1010 AC hit counts",
+            "type": "web-service.http_request",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "allow_auto_redirect": true,
+              "content_type": "application/json",
+              "continue_on_error_status_code": false,
+              "continue_on_failure": false,
+              "custom_headers": [
+                {
+                  "name": "Authorization",
+                  "value": "Bearer $workflow.definition_workflow_01PSZNE2M3MEK7NVH3nVdQQOqZDSRWYkH7u.output.variable_workflow_01PTJT7GAG5MZ6ii7pxzAbWnU2X1NqVx9nI$"
+                }
+              ],
+              "display_name": "Get FDM1010 AC hit counts",
+              "method": "GET",
+              "relative_url": "/fdm/v6/policy/accesspolicies/default/operational/hitcounts",
+              "runtime_user": {
+                "target_default": true
+              },
+              "skip_execution": true,
+              "target": {
+                "override_workflow_target": true,
+                "target_id": "definition_target_01PY0I3TA29OH43z41c8kVMQ9UwmkLS7e8P"
+              }
+            },
+            "object_type": "definition_activity"
           }
-        },
-        "object_type": "definition_activity"
+        ]
       },
       {
-        "unique_name": "definition_activity_01Q6BOKQ5V6M354WCDl269A3MCj7aPq7V2x",
+        "unique_name": "definition_activity_01QA063EQI5IZ11yYa79zsQUWJWrnJOATbe",
         "name": "Send Email",
-        "title": "Send Email",
+        "title": "Send results to Email",
         "type": "email.smtp_send_email",
         "base_type": "activity",
         "properties": {
           "action_timeout": 180,
+          "body": "$activity.definition_activity_01Q9PUO6UW1G46PUZYLCiNMm9Pn651nmWqH.output.response_body$",
           "continue_if_one_address_valid": false,
           "continue_on_failure": false,
-          "display_name": "Send Email",
+          "display_name": "Send results to Email",
+          "html": true,
           "runtime_user": {
             "target_default": true
           },
           "skip_execution": false,
+          "subject": "FMC and FDM info",
           "target": {
-            "use_workflow_target": true
-          }
+            "override_workflow_target": true,
+            "target_id": "definition_target_01P1GDZ6Q76KF4ofNrE1UXHZ8ZmllBwC8K1"
+          },
+          "to": "jsalat@cisco.com"
         },
         "object_type": "definition_activity"
       }
@@ -236,6 +352,22 @@
     }
   },
   "targets": {
+    "definition_target_01P1GDZ6Q76KF4ofNrE1UXHZ8ZmllBwC8K1": {
+      "unique_name": "definition_target_01P1GDZ6Q76KF4ofNrE1UXHZ8ZmllBwC8K1",
+      "name": "GMAIL",
+      "title": "GMAIL",
+      "type": "email.smtp_endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "default_runtime_user_id": "definition_runtime_user_01P1G6U9PDLVN2YPEuGDAMR8btOM34smM6S",
+        "display_name": "GMAIL",
+        "no_runtime_user": false,
+        "port": 465,
+        "protocol": "SMTP",
+        "server": "smtp.gmail.com"
+      }
+    },
     "definition_target_01P7EVSWVB43X5ANPQjK9vhpZrvbcjwP9UP": {
       "unique_name": "definition_target_01P7EVSWVB43X5ANPQjK9vhpZrvbcjwP9UP",
       "name": "FMC",
@@ -272,6 +404,7 @@
         "host": "192.168.80.11",
         "ignore_proxy": false,
         "no_runtime_user": false,
+        "path": "api/fdm/v6",
         "protocol": "https"
       }
     },
@@ -283,16 +416,31 @@
       "base_type": "target",
       "object_type": "definition_target",
       "properties": {
-        "disable_certificate_validation": false,
+        "ao_remote_id": "01P76OBIT2T6Z3PKl2cwPv55Z4gqZcid132",
+        "disable_certificate_validation": true,
         "display_name": "FPR1010_NO_creds",
         "host": "192.168.80.11",
         "ignore_proxy": false,
         "no_runtime_user": true,
+        "path": "/api",
         "protocol": "https"
       }
     }
   },
   "runtime_users": {
+    "definition_runtime_user_01P1G6U9PDLVN2YPEuGDAMR8btOM34smM6S": {
+      "unique_name": "definition_runtime_user_01P1G6U9PDLVN2YPEuGDAMR8btOM34smM6S",
+      "name": "gmail creds",
+      "title": "gmail creds",
+      "type": "runtime_user.email_credentials",
+      "base_type": "runtime_user",
+      "object_type": "definition_runtime_user",
+      "properties": {
+        "display_name": "gmail creds",
+        "password": "*****",
+        "sender": "*****"
+      }
+    },
     "definition_runtime_user_01P7EUZX0GCT94YBdbQUxNwTQ5yeDJEodFa": {
       "unique_name": "definition_runtime_user_01P7EUZX0GCT94YBdbQUxNwTQ5yeDJEodFa",
       "name": "FMC API Credentials",
