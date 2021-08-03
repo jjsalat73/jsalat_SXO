@@ -1,8 +1,8 @@
 {
   "workflow": {
     "unique_name": "definition_workflow_01Q430QS7QRDH2R4nfTkw6ODUSeWApJ35PN",
-    "name": "Cisco Architecture protection report",
-    "title": "Cisco Architecture protection report",
+    "name": "Cisco Architecture value report",
+    "title": "Cisco Architecture value report",
     "type": "generic.workflow",
     "base_type": "workflow",
     "variables": [
@@ -27,7 +27,7 @@
       },
       "delete_workflow_instance": false,
       "description": "pull blocks and alerts from NGFW, AMP, Umbrella, Swatch and Meraki and create report.",
-      "display_name": "Cisco Architecture protection report",
+      "display_name": "Cisco Architecture value report",
       "runtime_user": {
         "target_default": true
       },
@@ -167,7 +167,7 @@
                 "type": "workflow.atomic_workflow",
                 "base_type": "subworkflow",
                 "properties": {
-                  "continue_on_failure": false,
+                  "continue_on_failure": true,
                   "display_name": "Umbrella - Reporting v2 - Get Categories",
                   "input": {
                     "variable_workflow_01P8BG7ZXQPTE3JquLssJ8abKflvirNVYim": "$global.variable_01PAWISX4FAM31kUYYvaPAcC04Mnplyv1ph.global.variable_01PAWISX4FAM31kUYYvaPAcC04Mnplyv1ph$",
@@ -208,7 +208,7 @@
                 "type": "workflow.atomic_workflow",
                 "base_type": "subworkflow",
                 "properties": {
-                  "continue_on_failure": false,
+                  "continue_on_failure": true,
                   "display_name": "Umbrella - Get Top Threats",
                   "input": {
                     "variable_workflow_01P3F7PJ5A6JJ1rMjF8dGNRnMrH0EHVgJSm": "$global.variable_01PAWISX4FAM31kUYYvaPAcC04Mnplyv1ph.global.variable_01PAWISX4FAM31kUYYvaPAcC04Mnplyv1ph$",
@@ -323,15 +323,41 @@
       {
         "unique_name": "definition_activity_01QBP3A629XL31JCWMhhLg29YuX6KRTNT9U",
         "name": "Group",
-        "title": "Group",
+        "title": "Get Email security blocks",
         "type": "logic.group",
         "base_type": "activity",
         "properties": {
           "continue_on_failure": false,
-          "display_name": "Group",
+          "display_name": "Get Email security blocks",
           "skip_execution": false
         },
-        "object_type": "definition_activity"
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_01QBPF6VND88B3KIaQF1W1QyxERVJMAByfq",
+            "name": "HTTP Request",
+            "title": "Get ESA/CES file quarantines",
+            "type": "web-service.http_request",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "allow_auto_redirect": true,
+              "continue_on_error_status_code": false,
+              "continue_on_failure": false,
+              "display_name": "Get ESA/CES file quarantines",
+              "method": "GET",
+              "runtime_user": {
+                "target_default": true
+              },
+              "skip_execution": false,
+              "target": {
+                "override_workflow_target": true,
+                "target_id": "definition_target_01PQ18R2RUD8D75taV5JikfSDVyV20wVFKs"
+              }
+            },
+            "object_type": "definition_activity"
+          }
+        ]
       },
       {
         "unique_name": "definition_activity_01Q5GVFIWGSF878n0KYf8r7nDaMpX7UxM46",
@@ -892,6 +918,23 @@
         "protocol": "https"
       }
     },
+    "definition_target_01PQ18R2RUD8D75taV5JikfSDVyV20wVFKs": {
+      "unique_name": "definition_target_01PQ18R2RUD8D75taV5JikfSDVyV20wVFKs",
+      "name": "Microsoft Graph Token",
+      "title": "Microsoft Graph Token",
+      "type": "web-service.endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "default_runtime_user_id": "definition_runtime_user_01PQ17P29U8MS7RmUZkzJKE00oDZxibFlqU",
+        "disable_certificate_validation": false,
+        "display_name": "Microsoft Graph Token",
+        "host": "login.microsoftonline.com",
+        "ignore_proxy": false,
+        "no_runtime_user": false,
+        "protocol": "https"
+      }
+    },
     "definition_target_01PTIZRGUFT502lrpwSic9oYUz29D2K6b4O": {
       "unique_name": "definition_target_01PTIZRGUFT502lrpwSic9oYUz29D2K6b4O",
       "name": "FDM_1010",
@@ -1023,6 +1066,21 @@
         "basic_password": "*****",
         "basic_username": "*****",
         "display_name": "FMC API Credentials"
+      }
+    },
+    "definition_runtime_user_01PQ17P29U8MS7RmUZkzJKE00oDZxibFlqU": {
+      "unique_name": "definition_runtime_user_01PQ17P29U8MS7RmUZkzJKE00oDZxibFlqU",
+      "name": "Microsoft Graph API",
+      "title": "Microsoft Graph API",
+      "type": "runtime_user.web-service_basic_credentials",
+      "base_type": "runtime_user",
+      "object_type": "definition_runtime_user",
+      "properties": {
+        "auth_option": "*****",
+        "basic_password": "*****",
+        "basic_username": "*****",
+        "description": "client id \nsecret",
+        "display_name": "Microsoft Graph API"
       }
     },
     "definition_runtime_user_01PTJGD4B2X9H2YIEWoWgEKYdeCJ5utEPH4": {
@@ -1257,6 +1315,69 @@
     },
     {
       "workflow": {
+        "unique_name": "definition_workflow_01PZTAB1CVLNL4GhFVSzrCI93ADegXj1tgU",
+        "name": "json queries / parsing",
+        "title": "json queries / parsing",
+        "type": "generic.workflow",
+        "base_type": "workflow",
+        "variables": [
+          {
+            "schema_id": "datatype.string",
+            "properties": {
+              "value": "",
+              "scope": "local",
+              "name": "results",
+              "type": "datatype.string",
+              "is_required": false,
+              "is_invisible": false
+            },
+            "unique_name": "variable_workflow_01PZTKZ0DFTAI7Hdr2PgqoNCfAAeRkjgANt",
+            "object_type": "variable_workflow"
+          }
+        ],
+        "properties": {
+          "atomic": {
+            "is_atomic": false
+          },
+          "delete_workflow_instance": false,
+          "display_name": "json queries / parsing",
+          "runtime_user": {
+            "target_default": true
+          },
+          "target": {
+            "no_target": true
+          }
+        },
+        "object_type": "definition_workflow",
+        "actions": [
+          {
+            "unique_name": "definition_activity_01PZTAEQ28C6V29uSCbU2jSKPFGcc8ocFRU",
+            "name": "JSONpath TESTING",
+            "title": "JSONpath TESTING",
+            "type": "workflow.atomic_workflow",
+            "base_type": "subworkflow",
+            "properties": {
+              "display_name": "JSONpath TESTING",
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "execute_on_this_target": true,
+                "target_id": "definition_target_01K8PG8NQBUL34PRlsDXNWNSHUXydaRkocw",
+                "target_type": "web-service.endpoint"
+              },
+              "workflow_id": "definition_workflow_01PX0UJXXIHQT0uHW2WyU9o3Nf5jZ1FeSZA"
+            },
+            "object_type": "definition_activity"
+          }
+        ],
+        "categories": [
+          "category_01PTGMYPR86ZE1h2iTDmEXvXQUOK0VXs4BI"
+        ]
+      }
+    },
+    {
+      "workflow": {
         "unique_name": "definition_workflow_01PSZNE2M3MEK7NVH3nVdQQOqZDSRWYkH7u",
         "name": "FMC and FDM Health Check",
         "title": "FMC and FDM Health Check",
@@ -1482,25 +1603,6 @@
                 "object_type": "definition_activity"
               },
               {
-                "unique_name": "definition_activity_01PTJSCOJY5321cNd7DiG1djLUq3E0ZkyEU",
-                "name": "Set Variables",
-                "title": "Update workflow with new token",
-                "type": "core.set_multiple_variables",
-                "base_type": "activity",
-                "properties": {
-                  "continue_on_failure": true,
-                  "display_name": "Update workflow with new token",
-                  "skip_execution": true,
-                  "variables_to_update": [
-                    {
-                      "variable_to_update": "$workflow.definition_workflow_01PSZNE2M3MEK7NVH3nVdQQOqZDSRWYkH7u.output.variable_workflow_01PTJT7GAG5MZ6ii7pxzAbWnU2X1NqVx9nI$",
-                      "variable_value_new": "$activity.definition_activity_01PTJ878CTEU91t2hs9Tn5IDWa3C7sJy5ZS.output.response_body$"
-                    }
-                  ]
-                },
-                "object_type": "definition_activity"
-              },
-              {
                 "unique_name": "definition_activity_01Q9PUO6UW1G46PUZYLCiNMm9Pn651nmWqH",
                 "name": "HTTP Request",
                 "title": "Get FDM1010 AC hit counts",
@@ -1531,59 +1633,268 @@
                   }
                 },
                 "object_type": "definition_activity"
-              },
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_01QC4XLR0MBYG3VT9oJDfia4Z396Sc09ELx",
+            "name": "Group",
+            "title": "Format Text",
+            "type": "logic.group",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "Format Text",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
               {
-                "unique_name": "definition_activity_01QBKUMCCXWGF4fbkotqxig6sEyK64aR3am",
-                "name": "HTTP Request",
-                "title": "Get FDM1010 AC hit counts",
-                "type": "web-service.http_request",
+                "unique_name": "definition_activity_01QC3NKQCI90R6h3srIgORFuqCnsLXH6pR2",
+                "name": "JSONPath Query",
+                "title": "List FDM Rule Names",
+                "type": "corejava.jsonpathquery",
                 "base_type": "activity",
                 "properties": {
                   "action_timeout": 180,
-                  "allow_auto_redirect": true,
-                  "content_type": "application/json",
-                  "continue_on_error_status_code": false,
                   "continue_on_failure": false,
-                  "custom_headers": [
+                  "display_name": "List FDM Rule Names",
+                  "input_json": "$activity.definition_activity_01Q9PUO6UW1G46PUZYLCiNMm9Pn651nmWqH.output.response_body$",
+                  "jsonpath_queries": [
                     {
-                      "name": "Authorization",
-                      "value": "Bearer $workflow.definition_workflow_01PSZNE2M3MEK7NVH3nVdQQOqZDSRWYkH7u.output.variable_workflow_01PTJT7GAG5MZ6ii7pxzAbWnU2X1NqVx9nI$"
+                      "jsonpath_query": "$..name",
+                      "jsonpath_query_name": "name",
+                      "jsonpath_query_type": "string"
                     }
                   ],
-                  "display_name": "Get FDM1010 AC hit counts",
-                  "method": "GET",
-                  "relative_url": "/fdm/v6/policy/accesspolicies/default/operational/hitcounts",
-                  "runtime_user": {
-                    "target_default": true
-                  },
-                  "skip_execution": true,
-                  "target": {
-                    "override_workflow_target": true,
-                    "target_id": "definition_target_01PY0I3TA29OH43z41c8kVMQ9UwmkLS7e8P"
-                  }
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_01QC3ZADEFEX42NMPxymmiJRuJjDM0zkbRj",
+                "name": "JSONPath Query",
+                "title": "List FDM Rule Hit Counts",
+                "type": "corejava.jsonpathquery",
+                "base_type": "activity",
+                "properties": {
+                  "action_timeout": 180,
+                  "continue_on_failure": false,
+                  "display_name": "List FDM Rule Hit Counts",
+                  "input_json": "$activity.definition_activity_01Q9PUO6UW1G46PUZYLCiNMm9Pn651nmWqH.output.response_body$",
+                  "jsonpath_queries": [
+                    {
+                      "jsonpath_query": "$..hitCount",
+                      "jsonpath_query_name": "hitCount",
+                      "jsonpath_query_type": "string"
+                    }
+                  ],
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_01QC6GUZMPMZI6SWkxjIpFD6o5RX5eI2BmG",
+                "name": "JSONPath Query",
+                "title": "List FMC Version",
+                "type": "corejava.jsonpathquery",
+                "base_type": "activity",
+                "properties": {
+                  "action_timeout": 180,
+                  "continue_on_failure": false,
+                  "display_name": "List FMC Version",
+                  "input_json": "$activity.definition_activity_01PSZNH8C0EGV3cLnysPB6VwNOedWWq15NN.output.response_body$",
+                  "jsonpath_queries": [
+                    {
+                      "jsonpath_query": "$..items",
+                      "jsonpath_query_name": "items",
+                      "jsonpath_query_type": "string"
+                    }
+                  ],
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_01QC6OGDOXNNY2FqhJ9fK1NP4GFTUMNwNlL",
+                "name": "JSONPath Query",
+                "title": "FMC Health Monitor results",
+                "type": "corejava.jsonpathquery",
+                "base_type": "activity",
+                "properties": {
+                  "action_timeout": 180,
+                  "continue_on_failure": false,
+                  "display_name": "FMC Health Monitor results",
+                  "input_json": "$activity.definition_activity_01PTFONOC1JTO5F1w85Y125iuDPEAZnGazx.output.response_body$",
+                  "jsonpath_queries": [
+                    {
+                      "jsonpath_query": "$..items[2]",
+                      "jsonpath_query_name": "moduleID",
+                      "jsonpath_query_type": "string"
+                    }
+                  ],
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_01QC424V0S0RI01zUPbcVlqgsm6SF3s6WZT",
+                "name": "Replace String",
+                "title": "Delete json charaters from Rule name",
+                "type": "core.replacestring",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Delete json charaters from Rule name",
+                  "input_string": "$activity.definition_activity_01QC3NKQCI90R6h3srIgORFuqCnsLXH6pR2.output.jsonpath_queries.name$",
+                  "replace_list": [
+                    {
+                      "replaced_string": "[",
+                      "replacement_string": ""
+                    },
+                    {
+                      "replaced_string": "]",
+                      "replacement_string": ""
+                    },
+                    {
+                      "replaced_string": "\"",
+                      "replacement_string": ""
+                    }
+                  ],
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_01QC486N6TTTT09uYpbktanmEKgBjMDu0He",
+                "name": "Replace String",
+                "title": "Delete json charaters from hit count",
+                "type": "core.replacestring",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Delete json charaters from hit count",
+                  "input_string": "$activity.definition_activity_01QC3ZADEFEX42NMPxymmiJRuJjDM0zkbRj.output.jsonpath_queries.hitCount$",
+                  "replace_list": [
+                    {
+                      "replaced_string": "[",
+                      "replacement_string": ""
+                    },
+                    {
+                      "replaced_string": "]",
+                      "replacement_string": ""
+                    },
+                    {
+                      "replaced_string": "\"",
+                      "replacement_string": ""
+                    }
+                  ],
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_01QC9FDX03V8X6zBqBvn3RKjJVhnOYWLZl7",
+                "name": "Replace String",
+                "title": "Delete json charaters from fmc health monitor",
+                "type": "core.replacestring",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Delete json charaters from fmc health monitor",
+                  "input_string": "$activity.definition_activity_01QC6OGDOXNNY2FqhJ9fK1NP4GFTUMNwNlL.output.jsonpath_queries.moduleID$",
+                  "replace_list": [
+                    {
+                      "replaced_string": "[",
+                      "replacement_string": ""
+                    },
+                    {
+                      "replaced_string": "]",
+                      "replacement_string": ""
+                    },
+                    {
+                      "replaced_string": "\"",
+                      "replacement_string": ""
+                    }
+                  ],
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_01QC9G98PSW5V1MCmufBgzrIiyVyS0mkY3N",
+                "name": "Replace String",
+                "title": "Delete json charaters from fmc version ",
+                "type": "core.replacestring",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Delete json charaters from fmc version ",
+                  "input_string": "$activity.definition_activity_01QC6GUZMPMZI6SWkxjIpFD6o5RX5eI2BmG.output.jsonpath_queries.items$",
+                  "replace_list": [
+                    {
+                      "replaced_string": "[",
+                      "replacement_string": ""
+                    },
+                    {
+                      "replaced_string": "]",
+                      "replacement_string": ""
+                    },
+                    {
+                      "replaced_string": "\"",
+                      "replacement_string": ""
+                    }
+                  ],
+                  "skip_execution": false
                 },
                 "object_type": "definition_activity"
               }
             ]
           },
           {
-            "unique_name": "definition_activity_01QA063EQI5IZ11yYa79zsQUWJWrnJOATbe",
+            "unique_name": "definition_activity_01QC3T4AUN15H3d2Jp5CgfgsNfJRoGcug6B",
             "name": "Send Email",
-            "title": "Send results to Email",
+            "title": "Send results to Email- FDM",
             "type": "email.smtp_send_email",
             "base_type": "activity",
             "properties": {
               "action_timeout": 180,
-              "body": "$activity.definition_activity_01Q9PUO6UW1G46PUZYLCiNMm9Pn651nmWqH.output.response_body$",
+              "body": "Rule Names: $activity.definition_activity_01QC424V0S0RI01zUPbcVlqgsm6SF3s6WZT.output.result_string$\n\u003cbr\u003e Hit Counts: $activity.definition_activity_01QC486N6TTTT09uYpbktanmEKgBjMDu0He.output.result_string$",
               "continue_if_one_address_valid": false,
               "continue_on_failure": false,
-              "display_name": "Send results to Email",
+              "display_name": "Send results to Email- FDM",
               "html": true,
               "runtime_user": {
                 "target_default": true
               },
               "skip_execution": false,
-              "subject": "FMC and FDM info",
+              "subject": "FDM info",
+              "target": {
+                "override_workflow_target": true,
+                "target_id": "definition_target_01P1GDZ6Q76KF4ofNrE1UXHZ8ZmllBwC8K1"
+              },
+              "to": "jsalat@cisco.com"
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01QC529UP1QUW3WeP93Iv2FMZf92RRhQVuD",
+            "name": "Send Email",
+            "title": "Send results to Email - FMC",
+            "type": "email.smtp_send_email",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "body": "$activity.definition_activity_01QC9G98PSW5V1MCmufBgzrIiyVyS0mkY3N.output.result_string$\n\u003cbr\u003e\n$activity.definition_activity_01QC9FDX03V8X6zBqBvn3RKjJVhnOYWLZl7.output.result_string$",
+              "continue_if_one_address_valid": false,
+              "continue_on_failure": false,
+              "display_name": "Send results to Email - FMC",
+              "html": true,
+              "runtime_user": {
+                "target_default": true
+              },
+              "skip_execution": false,
+              "subject": "FMC  info",
               "target": {
                 "override_workflow_target": true,
                 "target_id": "definition_target_01P1GDZ6Q76KF4ofNrE1UXHZ8ZmllBwC8K1"
@@ -1600,128 +1911,25 @@
     },
     {
       "workflow": {
-        "unique_name": "definition_workflow_01PZTAB1CVLNL4GhFVSzrCI93ADegXj1tgU",
-        "name": "json queries / parsing",
-        "title": "json queries / parsing",
+        "unique_name": "definition_workflow_01MYFQTNEDCFB1ih43FN0YzqcqPZIyiDMMA",
+        "name": " Meraki security event alerts / SX casebook creation",
+        "title": " Meraki security event alerts / SX casebook creation",
         "type": "generic.workflow",
         "base_type": "workflow",
         "variables": [
           {
-            "schema_id": "datatype.string",
+            "schema_id": "datatype.secure_string",
             "properties": {
-              "value": "",
+              "value": "*****",
               "scope": "local",
-              "name": "results",
-              "type": "datatype.string",
+              "name": "api key webex",
+              "type": "datatype.secure_string",
               "is_required": false,
               "is_invisible": false
             },
-            "unique_name": "variable_workflow_01PZTKZ0DFTAI7Hdr2PgqoNCfAAeRkjgANt",
+            "unique_name": "variable_workflow_01MYFQTN6YYNC4teZ6TKluP2qyzJmjjyE1V",
             "object_type": "variable_workflow"
-          }
-        ],
-        "properties": {
-          "atomic": {
-            "is_atomic": false
           },
-          "delete_workflow_instance": false,
-          "display_name": "json queries / parsing",
-          "runtime_user": {
-            "target_default": true
-          },
-          "target": {
-            "no_target": true
-          }
-        },
-        "object_type": "definition_workflow",
-        "actions": [
-          {
-            "unique_name": "definition_activity_01PZTAEQ28C6V29uSCbU2jSKPFGcc8ocFRU",
-            "name": "JSONpath TESTING",
-            "title": "JSONpath TESTING",
-            "type": "workflow.atomic_workflow",
-            "base_type": "subworkflow",
-            "properties": {
-              "display_name": "JSONpath TESTING",
-              "runtime_user": {
-                "target_default": true
-              },
-              "target": {
-                "execute_on_this_target": true,
-                "target_id": "definition_target_01K8PG8NQBUL34PRlsDXNWNSHUXydaRkocw",
-                "target_type": "web-service.endpoint"
-              },
-              "workflow_id": "definition_workflow_01PX0UJXXIHQT0uHW2WyU9o3Nf5jZ1FeSZA"
-            },
-            "object_type": "definition_activity"
-          },
-          {
-            "unique_name": "definition_activity_01Q08TI7JUU1M745BfwSkjHyzVZQGyL8HPz",
-            "name": "Send Email",
-            "title": "Send Email",
-            "type": "email.smtp_send_email",
-            "base_type": "activity",
-            "properties": {
-              "action_timeout": 180,
-              "body": "$activity.definition_activity_01PZTAEQ28C6V29uSCbU2jSKPFGcc8ocFRU.output.variable_workflow_01PX0WT1DHZZC50S4WYq9GSwjFrZA8EhJEt$",
-              "continue_if_one_address_valid": false,
-              "continue_on_failure": false,
-              "display_name": "Send Email",
-              "runtime_user": {
-                "target_default": true
-              },
-              "skip_execution": false,
-              "subject": "jsonpath test",
-              "target": {
-                "override_workflow_target": true,
-                "target_id": "definition_target_01P1GDZ6Q76KF4ofNrE1UXHZ8ZmllBwC8K1"
-              },
-              "to": "jjsalat73@gmail.com"
-            },
-            "object_type": "definition_activity"
-          },
-          {
-            "unique_name": "definition_activity_01Q03ZTHFIPXU2v6cr1kZvaX0xn4I6HuKYu",
-            "name": "Webex Teams - Post Message to Room",
-            "title": "Webex Teams - Post Message to Room",
-            "type": "workflow.atomic_workflow",
-            "base_type": "subworkflow",
-            "properties": {
-              "continue_on_failure": false,
-              "display_name": "Webex Teams - Post Message to Room",
-              "input": {
-                "variable_workflow_01FGYY44G3MZ55amJu9YqgUeKS8GT49bZx3": "$global.variable_01P6N0UGXO7JB7HlXdqOu9FwRkW548JK0CV.global.variable_01P6N0UGXO7JB7HlXdqOu9FwRkW548JK0CV$",
-                "variable_workflow_01FGYY44G3TK951Crpnd8g2izonyM4bFtpW": "Y2lzY29zcGFyazovL3VzL1JPT00vZmQ4NzcwNzAtZTAxYy0xMWViLTg4ZjgtNDc2ZjMyMTA2NDAz",
-                "variable_workflow_01FGYY44G3UPV3heGGc3vXCV47YL5WoI2X6": "",
-                "variable_workflow_01FGYZ9BV4QTP19CuMwcW8QywvCP9ymx2BZ": "The email addresses are:  $workflow.definition_workflow_01PZTAB1CVLNL4GhFVSzrCI93ADegXj1tgU.local.variable_workflow_01PZTKZ0DFTAI7Hdr2PgqoNCfAAeRkjgANt$"
-              },
-              "runtime_user": {
-                "target_default": true
-              },
-              "skip_execution": false,
-              "target": {
-                "override_workflow_target": true,
-                "target_id": "definition_target_01GRC3KACN0EQ3FKm380fx9ufbyfPdrEJR5",
-                "target_type": "web-service.endpoint"
-              },
-              "workflow_id": "definition_workflow_01FGYY44YU521254ygN3Le0In0kEHpiPNpf"
-            },
-            "object_type": "definition_activity"
-          }
-        ],
-        "categories": [
-          "category_01PTGMYPR86ZE1h2iTDmEXvXQUOK0VXs4BI"
-        ]
-      }
-    },
-    {
-      "workflow": {
-        "unique_name": "definition_workflow_01MYFQTNEDCFB1ih43FN0YzqcqPZIyiDMMA",
-        "name": "Meraki security event alerts / SX casebook creation",
-        "title": "Meraki security event alerts / SX casebook creation",
-        "type": "generic.workflow",
-        "base_type": "workflow",
-        "variables": [
           {
             "schema_id": "datatype.secure_string",
             "properties": {
@@ -1738,19 +1946,6 @@
           {
             "schema_id": "datatype.string",
             "properties": {
-              "value": "226779",
-              "scope": "local",
-              "name": "Meraki Org ID",
-              "type": "datatype.string",
-              "is_required": false,
-              "is_invisible": false
-            },
-            "unique_name": "variable_workflow_01N7XONYYJPIP2HqiECjntw6FgM6MtHMi9k",
-            "object_type": "variable_workflow"
-          },
-          {
-            "schema_id": "datatype.string",
-            "properties": {
               "value": "",
               "scope": "local",
               "name": "time-1hour",
@@ -1759,19 +1954,6 @@
               "is_invisible": false
             },
             "unique_name": "variable_workflow_01MYFQTN6YWEX0KcR9AQhyD93gN7fXYKbUY",
-            "object_type": "variable_workflow"
-          },
-          {
-            "schema_id": "datatype.secure_string",
-            "properties": {
-              "value": "*****",
-              "scope": "local",
-              "name": "api key webex",
-              "type": "datatype.secure_string",
-              "is_required": false,
-              "is_invisible": false
-            },
-            "unique_name": "variable_workflow_01MYFQTN6YYNC4teZ6TKluP2qyzJmjjyE1V",
             "object_type": "variable_workflow"
           },
           {
@@ -1787,6 +1969,19 @@
             },
             "unique_name": "variable_workflow_01MYFQTN6YV9L1XgpHhyIjDivmJvlTS81Tc",
             "object_type": "variable_workflow"
+          },
+          {
+            "schema_id": "datatype.string",
+            "properties": {
+              "value": "226779",
+              "scope": "local",
+              "name": "Meraki Org ID",
+              "type": "datatype.string",
+              "is_required": false,
+              "is_invisible": false
+            },
+            "unique_name": "variable_workflow_01N7XONYYJPIP2HqiECjntw6FgM6MtHMi9k",
+            "object_type": "variable_workflow"
           }
         ],
         "properties": {
@@ -1795,7 +1990,7 @@
           },
           "delete_workflow_instance": false,
           "description": "This sample workflow will retrieve all security events from the last hour from Meraki for a specific Org ID. You can schedule it to run every hour with the trigger. It will then filter out Malware Downloaded and IDS Priority 1 events. It then sends deatils for this to a Webex  Teams space. Please make sure to set the 4 variables ('api key meraki', 'api key webex', 'webex space ID' and 'Meraki Org ID') before running. You can also run this  scheduled by enabling the trigger, it is currently disabled for testing. ",
-          "display_name": "Meraki security event alerts / SX casebook creation",
+          "display_name": " Meraki security event alerts / SX casebook creation",
           "runtime_user": {
             "override_target_runtime_user": false,
             "specify_on_workflow_start": false,
@@ -2290,21 +2485,21 @@
     }
   ],
   "atomic_workflows": [
-    "definition_workflow_01OPA5IJU4ENP4IhLW6cKVwCg9tDp0wzZlH",
-    "definition_workflow_01JAL8FWN0U1D7NP3p9TlCVEYn1wfnyji8a",
     "definition_workflow_01JAL22JA2KDM70amrajus8K4adt80jPl6C",
-    "definition_workflow_01KWJ2ISZTF2V6ibRYe7FZ7sOuycDOpnwss",
+    "definition_workflow_01GAPSU13QWGT5aCU7ByGC7drrA4iqw5WGZ",
+    "definition_workflow_01N7Z3TIWI71O7bKVmCXAeyFR6rujDvCT3t",
+    "definition_workflow_01N7YN0JH87GX3uZhBm3cxW9k5SakZWSIkA",
+    "definition_workflow_01DS6ELBOO8YR3uFJZju566LqiqR18VlE6r",
+    "definition_workflow_01P3F7PJCXN6W5OZqABUYvkUD3G0dg4CaPh",
+    "definition_workflow_01N7YAGMK5OYX6RLZ5KXSdzQ2pC7NQdy8sR",
+    "definition_workflow_01JAL8FWN0U1D7NP3p9TlCVEYn1wfnyji8a",
+    "definition_workflow_01NLOHEWXZ4MT3Lmcq3DkEVkx5EOTre59dL",
     "definition_workflow_01PX0UJXXIHQT0uHW2WyU9o3Nf5jZ1FeSZA",
     "definition_workflow_01P8BB9H4V1SW2fmJVfRET8Ux1DZmVrzZxz",
-    "definition_workflow_01DS6ELBOO8YR3uFJZju566LqiqR18VlE6r",
-    "definition_workflow_01NLOHEWXZ4MT3Lmcq3DkEVkx5EOTre59dL",
-    "definition_workflow_01GAPSU13QWGT5aCU7ByGC7drrA4iqw5WGZ",
-    "definition_workflow_01P3F7PJCXN6W5OZqABUYvkUD3G0dg4CaPh",
-    "definition_workflow_01FGYY44YU521254ygN3Le0In0kEHpiPNpf",
-    "definition_workflow_01N7YAGMK5OYX6RLZ5KXSdzQ2pC7NQdy8sR",
     "definition_workflow_01H8OAG0M0TEP6YXQdVScazNJ4Jyg66obMD",
-    "definition_workflow_01N7YN0JH87GX3uZhBm3cxW9k5SakZWSIkA",
-    "definition_workflow_01N7Z3TIWI71O7bKVmCXAeyFR6rujDvCT3t"
+    "definition_workflow_01OPA5IJU4ENP4IhLW6cKVwCg9tDp0wzZlH",
+    "definition_workflow_01FGYY44YU521254ygN3Le0In0kEHpiPNpf",
+    "definition_workflow_01KWJ2ISZTF2V6ibRYe7FZ7sOuycDOpnwss"
   ],
   "remotemetas": {
     "remote_meta_01P76OBIZ263U734PR8BoPBHm9jI8fmAiKL": {
