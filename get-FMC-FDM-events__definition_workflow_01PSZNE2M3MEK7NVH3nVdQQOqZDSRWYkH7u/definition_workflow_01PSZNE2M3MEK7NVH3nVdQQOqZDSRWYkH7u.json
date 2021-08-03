@@ -225,25 +225,6 @@
             "object_type": "definition_activity"
           },
           {
-            "unique_name": "definition_activity_01PTJSCOJY5321cNd7DiG1djLUq3E0ZkyEU",
-            "name": "Set Variables",
-            "title": "Update workflow with new token",
-            "type": "core.set_multiple_variables",
-            "base_type": "activity",
-            "properties": {
-              "continue_on_failure": true,
-              "display_name": "Update workflow with new token",
-              "skip_execution": true,
-              "variables_to_update": [
-                {
-                  "variable_to_update": "$workflow.definition_workflow_01PSZNE2M3MEK7NVH3nVdQQOqZDSRWYkH7u.output.variable_workflow_01PTJT7GAG5MZ6ii7pxzAbWnU2X1NqVx9nI$",
-                  "variable_value_new": "$activity.definition_activity_01PTJ878CTEU91t2hs9Tn5IDWa3C7sJy5ZS.output.response_body$"
-                }
-              ]
-            },
-            "object_type": "definition_activity"
-          },
-          {
             "unique_name": "definition_activity_01Q9PUO6UW1G46PUZYLCiNMm9Pn651nmWqH",
             "name": "HTTP Request",
             "title": "Get FDM1010 AC hit counts",
@@ -274,59 +255,268 @@
               }
             },
             "object_type": "definition_activity"
-          },
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_01QC4XLR0MBYG3VT9oJDfia4Z396Sc09ELx",
+        "name": "Group",
+        "title": "Format Text",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "Format Text",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
           {
-            "unique_name": "definition_activity_01QBKUMCCXWGF4fbkotqxig6sEyK64aR3am",
-            "name": "HTTP Request",
-            "title": "Get FDM1010 AC hit counts",
-            "type": "web-service.http_request",
+            "unique_name": "definition_activity_01QC3NKQCI90R6h3srIgORFuqCnsLXH6pR2",
+            "name": "JSONPath Query",
+            "title": "List FDM Rule Names",
+            "type": "corejava.jsonpathquery",
             "base_type": "activity",
             "properties": {
               "action_timeout": 180,
-              "allow_auto_redirect": true,
-              "content_type": "application/json",
-              "continue_on_error_status_code": false,
               "continue_on_failure": false,
-              "custom_headers": [
+              "display_name": "List FDM Rule Names",
+              "input_json": "$activity.definition_activity_01Q9PUO6UW1G46PUZYLCiNMm9Pn651nmWqH.output.response_body$",
+              "jsonpath_queries": [
                 {
-                  "name": "Authorization",
-                  "value": "Bearer $workflow.definition_workflow_01PSZNE2M3MEK7NVH3nVdQQOqZDSRWYkH7u.output.variable_workflow_01PTJT7GAG5MZ6ii7pxzAbWnU2X1NqVx9nI$"
+                  "jsonpath_query": "$..name",
+                  "jsonpath_query_name": "name",
+                  "jsonpath_query_type": "string"
                 }
               ],
-              "display_name": "Get FDM1010 AC hit counts",
-              "method": "GET",
-              "relative_url": "/fdm/v6/policy/accesspolicies/default/operational/hitcounts",
-              "runtime_user": {
-                "target_default": true
-              },
-              "skip_execution": true,
-              "target": {
-                "override_workflow_target": true,
-                "target_id": "definition_target_01PY0I3TA29OH43z41c8kVMQ9UwmkLS7e8P"
-              }
+              "skip_execution": false
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01QC3ZADEFEX42NMPxymmiJRuJjDM0zkbRj",
+            "name": "JSONPath Query",
+            "title": "List FDM Rule Hit Counts",
+            "type": "corejava.jsonpathquery",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "continue_on_failure": false,
+              "display_name": "List FDM Rule Hit Counts",
+              "input_json": "$activity.definition_activity_01Q9PUO6UW1G46PUZYLCiNMm9Pn651nmWqH.output.response_body$",
+              "jsonpath_queries": [
+                {
+                  "jsonpath_query": "$..hitCount",
+                  "jsonpath_query_name": "hitCount",
+                  "jsonpath_query_type": "string"
+                }
+              ],
+              "skip_execution": false
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01QC6GUZMPMZI6SWkxjIpFD6o5RX5eI2BmG",
+            "name": "JSONPath Query",
+            "title": "List FMC Version",
+            "type": "corejava.jsonpathquery",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "continue_on_failure": false,
+              "display_name": "List FMC Version",
+              "input_json": "$activity.definition_activity_01PSZNH8C0EGV3cLnysPB6VwNOedWWq15NN.output.response_body$",
+              "jsonpath_queries": [
+                {
+                  "jsonpath_query": "$..items",
+                  "jsonpath_query_name": "items",
+                  "jsonpath_query_type": "string"
+                }
+              ],
+              "skip_execution": false
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01QC6OGDOXNNY2FqhJ9fK1NP4GFTUMNwNlL",
+            "name": "JSONPath Query",
+            "title": "FMC Health Monitor results",
+            "type": "corejava.jsonpathquery",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "continue_on_failure": false,
+              "display_name": "FMC Health Monitor results",
+              "input_json": "$activity.definition_activity_01PTFONOC1JTO5F1w85Y125iuDPEAZnGazx.output.response_body$",
+              "jsonpath_queries": [
+                {
+                  "jsonpath_query": "$..items[2]",
+                  "jsonpath_query_name": "moduleID",
+                  "jsonpath_query_type": "string"
+                }
+              ],
+              "skip_execution": false
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01QC424V0S0RI01zUPbcVlqgsm6SF3s6WZT",
+            "name": "Replace String",
+            "title": "Delete json charaters from Rule name",
+            "type": "core.replacestring",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "Delete json charaters from Rule name",
+              "input_string": "$activity.definition_activity_01QC3NKQCI90R6h3srIgORFuqCnsLXH6pR2.output.jsonpath_queries.name$",
+              "replace_list": [
+                {
+                  "replaced_string": "[",
+                  "replacement_string": ""
+                },
+                {
+                  "replaced_string": "]",
+                  "replacement_string": ""
+                },
+                {
+                  "replaced_string": "\"",
+                  "replacement_string": ""
+                }
+              ],
+              "skip_execution": false
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01QC486N6TTTT09uYpbktanmEKgBjMDu0He",
+            "name": "Replace String",
+            "title": "Delete json charaters from hit count",
+            "type": "core.replacestring",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "Delete json charaters from hit count",
+              "input_string": "$activity.definition_activity_01QC3ZADEFEX42NMPxymmiJRuJjDM0zkbRj.output.jsonpath_queries.hitCount$",
+              "replace_list": [
+                {
+                  "replaced_string": "[",
+                  "replacement_string": ""
+                },
+                {
+                  "replaced_string": "]",
+                  "replacement_string": ""
+                },
+                {
+                  "replaced_string": "\"",
+                  "replacement_string": ""
+                }
+              ],
+              "skip_execution": false
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01QC9FDX03V8X6zBqBvn3RKjJVhnOYWLZl7",
+            "name": "Replace String",
+            "title": "Delete json charaters from fmc health monitor",
+            "type": "core.replacestring",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "Delete json charaters from fmc health monitor",
+              "input_string": "$activity.definition_activity_01QC6OGDOXNNY2FqhJ9fK1NP4GFTUMNwNlL.output.jsonpath_queries.moduleID$",
+              "replace_list": [
+                {
+                  "replaced_string": "[",
+                  "replacement_string": ""
+                },
+                {
+                  "replaced_string": "]",
+                  "replacement_string": ""
+                },
+                {
+                  "replaced_string": "\"",
+                  "replacement_string": ""
+                }
+              ],
+              "skip_execution": false
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01QC9G98PSW5V1MCmufBgzrIiyVyS0mkY3N",
+            "name": "Replace String",
+            "title": "Delete json charaters from fmc version ",
+            "type": "core.replacestring",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "Delete json charaters from fmc version ",
+              "input_string": "$activity.definition_activity_01QC6GUZMPMZI6SWkxjIpFD6o5RX5eI2BmG.output.jsonpath_queries.items$",
+              "replace_list": [
+                {
+                  "replaced_string": "[",
+                  "replacement_string": ""
+                },
+                {
+                  "replaced_string": "]",
+                  "replacement_string": ""
+                },
+                {
+                  "replaced_string": "\"",
+                  "replacement_string": ""
+                }
+              ],
+              "skip_execution": false
             },
             "object_type": "definition_activity"
           }
         ]
       },
       {
-        "unique_name": "definition_activity_01QA063EQI5IZ11yYa79zsQUWJWrnJOATbe",
+        "unique_name": "definition_activity_01QC3T4AUN15H3d2Jp5CgfgsNfJRoGcug6B",
         "name": "Send Email",
-        "title": "Send results to Email",
+        "title": "Send results to Email- FDM",
         "type": "email.smtp_send_email",
         "base_type": "activity",
         "properties": {
           "action_timeout": 180,
-          "body": "$activity.definition_activity_01Q9PUO6UW1G46PUZYLCiNMm9Pn651nmWqH.output.response_body$",
+          "body": "Rule Names: $activity.definition_activity_01QC424V0S0RI01zUPbcVlqgsm6SF3s6WZT.output.result_string$\n\u003cbr\u003e Hit Counts: $activity.definition_activity_01QC486N6TTTT09uYpbktanmEKgBjMDu0He.output.result_string$",
           "continue_if_one_address_valid": false,
           "continue_on_failure": false,
-          "display_name": "Send results to Email",
+          "display_name": "Send results to Email- FDM",
           "html": true,
           "runtime_user": {
             "target_default": true
           },
           "skip_execution": false,
-          "subject": "FMC and FDM info",
+          "subject": "FDM info",
+          "target": {
+            "override_workflow_target": true,
+            "target_id": "definition_target_01P1GDZ6Q76KF4ofNrE1UXHZ8ZmllBwC8K1"
+          },
+          "to": "jsalat@cisco.com"
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01QC529UP1QUW3WeP93Iv2FMZf92RRhQVuD",
+        "name": "Send Email",
+        "title": "Send results to Email - FMC",
+        "type": "email.smtp_send_email",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "body": "$activity.definition_activity_01QC9G98PSW5V1MCmufBgzrIiyVyS0mkY3N.output.result_string$\n\u003cbr\u003e\n$activity.definition_activity_01QC9FDX03V8X6zBqBvn3RKjJVhnOYWLZl7.output.result_string$",
+          "continue_if_one_address_valid": false,
+          "continue_on_failure": false,
+          "display_name": "Send results to Email - FMC",
+          "html": true,
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "subject": "FMC  info",
           "target": {
             "override_workflow_target": true,
             "target_id": "definition_target_01P1GDZ6Q76KF4ofNrE1UXHZ8ZmllBwC8K1"
