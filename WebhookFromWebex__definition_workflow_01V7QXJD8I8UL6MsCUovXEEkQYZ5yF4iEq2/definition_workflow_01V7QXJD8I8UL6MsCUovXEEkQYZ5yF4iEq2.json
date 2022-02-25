@@ -1,0 +1,186 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_01V7QXJD8I8UL6MsCUovXEEkQYZ5yF4iEq2",
+    "name": "WEBHOOK FROM WEBEX",
+    "title": "WEBHOOK FROM WEBEX",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": null,
+    "properties": {
+      "atomic": {
+        "is_atomic": false
+      },
+      "delete_workflow_instance": false,
+      "display_name": "WEBHOOK FROM WEBEX",
+      "runtime_user": {
+        "target_default": true
+      },
+      "target": {
+        "no_target": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_01V7QXRLIX7DB7V0qw3Ip1LXLxaRrex6wU1",
+        "name": "JSONPath Query",
+        "title": "JSONPath Query",
+        "type": "corejava.jsonpathquery",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": false,
+          "display_name": "JSONPath Query",
+          "input_json": "$trigger.triggerevent_01V7QZKGTO39G7PoatgJJcmx9NUYzwQYnTA.output.request_body$",
+          "jsonpath_queries": [
+            {
+              "jsonpath_query": "$.data.id",
+              "jsonpath_query_name": "MSG ID",
+              "jsonpath_query_type": "string"
+            }
+          ],
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01V7RFKZM9IRW4MQSd2ES6vRNwWfFbXxJ2G",
+        "name": "HTTP Request",
+        "title": "HTTP Request",
+        "type": "web-service.http_request",
+        "base_type": "activity",
+        "properties": {
+          "accept": "application/json",
+          "action_timeout": 180,
+          "allow_auto_redirect": true,
+          "content_type": "application/json",
+          "continue_on_error_status_code": true,
+          "continue_on_failure": false,
+          "custom_headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $global.variable_01V7TFUTEA8NX6SGExL4VSPmbsgJ5EKhggr.global.variable_01V7TFUTEA8NX6SGExL4VSPmbsgJ5EKhggr$"
+            }
+          ],
+          "display_name": "HTTP Request",
+          "method": "GET",
+          "relative_url": "/v1/messages/$activity.definition_activity_01V7QXRLIX7DB7V0qw3Ip1LXLxaRrex6wU1.output.jsonpath_queries.MSG ID$",
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "override_workflow_target": true,
+            "target_id": "definition_target_01LX9M2CUVR482PeG5JXwKM6RLFKvKZbah5"
+          }
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01V7RJ09JE9RX136gxQ1LDfZ07RMvyMzoGq",
+        "name": "JSONPath Query",
+        "title": "JSONPath Query",
+        "type": "corejava.jsonpathquery",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": false,
+          "display_name": "JSONPath Query",
+          "input_json": "$activity.definition_activity_01V7RFKZM9IRW4MQSd2ES6vRNwWfFbXxJ2G.output.response_body$",
+          "jsonpath_queries": [
+            {
+              "jsonpath_query": "$..text",
+              "jsonpath_query_name": "text",
+              "jsonpath_query_type": "string"
+            }
+          ],
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      }
+    ],
+    "categories": [
+      "category_1BMfMXSnJMyt5Ihqi7rWJr5N8cf"
+    ]
+  },
+  "triggers": {
+    "triggerevent_01V7QZKGTO39G7PoatgJJcmx9NUYzwQYnTA": {
+      "workflow_id": "definition_workflow_01V7QXJD8I8UL6MsCUovXEEkQYZ5yF4iEq2",
+      "name": "haha",
+      "title": "",
+      "lowercase_name": "event.haha",
+      "type": "event",
+      "base_type": "trigger",
+      "ref_id": "event_webhook_01V7O2ZYXETAY4yIOf4MGiNt3EaRGXermkr",
+      "version": "1.0.0",
+      "disabled": false,
+      "unique_name": "triggerevent_01V7QZKGTO39G7PoatgJJcmx9NUYzwQYnTA",
+      "object_type": "triggerevent"
+    }
+  },
+  "events": {
+    "event_webhook_01V7O2ZYXETAY4yIOf4MGiNt3EaRGXermkr": {
+      "name": "TESTTESTfdf",
+      "title": "TESTTESTfdf",
+      "type": "webhook.event",
+      "base_type": "event",
+      "object_type": "event_webhook",
+      "target_id": "",
+      "webhook_id": "webhook_01V7NVPE9SYZ779WuLpPTLTIG3MoqJ7vF3J",
+      "version": "1.0.0",
+      "properties": {
+        "title": "TESTTESTfdf",
+        "webhook_id": "webhook_01V7NVPE9SYZ779WuLpPTLTIG3MoqJ7vF3J"
+      },
+      "unique_name": "event_webhook_01V7O2ZYXETAY4yIOf4MGiNt3EaRGXermkr"
+    }
+  },
+  "targets": {
+    "definition_target_01LX9M2CUVR482PeG5JXwKM6RLFKvKZbah5": {
+      "unique_name": "definition_target_01LX9M2CUVR482PeG5JXwKM6RLFKvKZbah5",
+      "name": "Webex Teams",
+      "title": "Webex Teams",
+      "type": "web-service.endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "description": "Webex Teams",
+        "disable_certificate_validation": false,
+        "display_name": "Webex Teams",
+        "host": "webexapis.com",
+        "no_runtime_user": true,
+        "port": 443,
+        "protocol": "https"
+      }
+    }
+  },
+  "variables": {
+    "variable_01V7TFUTEA8NX6SGExL4VSPmbsgJ5EKhggr": {
+      "unique_name": "variable_01V7TFUTEA8NX6SGExL4VSPmbsgJ5EKhggr",
+      "properties": {
+        "value": "ZGNhOWU3ODktMzZiNC00MTRjLTg5YzktZjM5ODFhNDExY2UwMWYyYjFiYjYtY2Iy_PF84_1eb65fdf-9643-417f-9974-ad72cae0e10f",
+        "scope": "global",
+        "name": "Webex SXO2 BOT Access Token",
+        "type": "datatype.string",
+        "is_required": false,
+        "is_invisible": false
+      },
+      "object_type": "variable"
+    }
+  },
+  "webhooks": {
+    "webhook_01V7NVPE9SYZ779WuLpPTLTIG3MoqJ7vF3J": {
+      "name": "test utf-8",
+      "title": "test utf-8",
+      "type": "generic.webhook",
+      "base_type": "webhook",
+      "object_type": "webhook",
+      "version": "1.0.0",
+      "properties": {
+        "display_name": "test utf-8",
+        "request_content_type": "application/json; charset=utf-8"
+      },
+      "unique_name": "webhook_01V7NVPE9SYZ779WuLpPTLTIG3MoqJ7vF3J"
+    }
+  }
+}
